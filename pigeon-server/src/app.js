@@ -1,8 +1,8 @@
-var http = require('http');
-var createError = require('http-errors');
-var express = require('express');
+import http from 'http';
+import createError from 'http-errors';
+import express from 'express';
 
-const port = 3000;
+const port = 8080;
 
 const app = express();
 const server = http.createServer(app);
@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/', (req, res, next) => {
-  res.send('Hello world');
+  res.send('Hello world!');
 });
 
 // catch 404 and forward to error handler
