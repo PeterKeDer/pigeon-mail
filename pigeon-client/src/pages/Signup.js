@@ -3,11 +3,11 @@ import "../helpers/auth.js"
 import { signIn, signUp } from "../helpers/auth.js";
 import React from "react";
 
-class Login extends React.Component {
+class Signup extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {email: "", password: ""};
+        this.state = {email: "", password: "", passwordConfirm: ""};
     
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
@@ -21,11 +21,18 @@ class Login extends React.Component {
     handleChangePassword(event) {
         this.setState({password: event.target.value});
     }
+    handleChangePasswordConfirm(event) {
+        this.setState({passwordConfirm: event.target.value});
+    }
     
     handleSubmit(event) {
-        console.log(this.state.email + ", " + this.state.password)
-        signIn(this.state.email, this.state.password);  
+        console.log(this.state.email + ", " + this.state.password + ", " + this.state.passwordConfirm);
+        signIn(this.state.email, this.state.password); 
         event.preventDefault();
+    }
+
+    verifyInputs() {
+        return (this.state.email.length > 0) && (this.state.password > 0) && (this.state.passwordConfirm > 0) && (this.state.password == this.state.passwordConfirm);
     }
     
     render() {
@@ -39,13 +46,13 @@ class Login extends React.Component {
                     Password
                     <input type="text" value={this.state.password} onChange={this.handleChangePassword} />
                 </label>
-                <input type="submit" value="Sign In" />
+                <label>
+                    Confirm Password
+                    <input type="text" value={this.state.password} onChange={this.handleChangePasswordConfirm} />
+                </label>
+                <input type="submit" value="Sign Up" disabled={!this.verifyInputs}/>
             </form>
-            <div>
-                <Link to="/Signup">Don"t have an account? Sign up here</Link>
-            </div>
         );
     }
 } 
-export default Login;
-    
+export default Signup;
