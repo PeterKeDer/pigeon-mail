@@ -55,6 +55,7 @@ async function prepareSend(userId, receiver, pigeonId) {
     }
 
     if (!pigeonIds.includes(pigeonId)) {
+        console.log(pigeonIds);
         throw 'does not own the pigeon';
     }
 
