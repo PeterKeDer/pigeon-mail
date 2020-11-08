@@ -1,6 +1,8 @@
 import http from 'http';
 import createError from 'http-errors';
 import express from 'express';
+import 'regenerator-runtime';
+import messageController from './controllers/messageController';
 
 const port = 8080;
 
@@ -10,9 +12,7 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/', (req, res, next) => {
-  res.send('Hello world!');
-});
+app.use('/messages', messageController);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send('There was an error. Hmm')
 });
 
 server.listen(port, () => console.log(`Server started at http://localhost:${port}`));
