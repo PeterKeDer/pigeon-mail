@@ -4,6 +4,7 @@ import Login from "./pages/Login"
 import Map from "./pages/Map"
 import Signup from './pages/Signup';
 import Dashboard from "./pages/Dashboard"
+import NewMail from "./pages/NewMail"
 
 export default function App() {
     return(
@@ -15,6 +16,7 @@ export default function App() {
                     <Route path="/map" component={Map} />
                     <Route path="/signup" component={Signup} />
                     <Route path="/dashboard" component={Dashboard} />
+                    <Route path="/newmail" component={NewMail} />
 
                 </Switch>
             </div>

@@ -1,5 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from "react-router-dom";
+import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -16,6 +18,8 @@ import AddIcon from '@material-ui/icons/Add';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import Bar from './Components';
+
+import Axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -56,7 +60,22 @@ const useStyles = makeStyles((theme) => ({
 function DisplayMail(props) {
     const classes = useStyles();
     const mailArray = props.display;
-    console.log(mailArray);
+    const req= {
+        userId: "n1gg4",
+    }
+    Axios.post("http://192.168.0.51:8080/messages/list", req)
+            .then(res => {
+                console.log(res);
+                // toast.success(`campaignInfo was added.`);
+                // setTimeout(function () {
+                //     info.object.props.history.push('/campaign/campaign');
+                // }, 1000);
+            })
+            .catch(err => {
+                console.error(err.response);
+            })
+
+            
     return (
         <>
         <Grid container spacing={3} >
@@ -90,8 +109,7 @@ function DisplayMail(props) {
         </>
     );
 }
-
-export default function Dashboard() {
+function Dashboard(props) {
 
     // constructor(props) {
     //     super(props);
@@ -101,6 +119,7 @@ export default function Dashboard() {
     //     this.handleSubmit = this.handleSubmit.bind(this);
     // }
     const classes = useStyles();
+    let history = useHistory();
 
     // FOR TESTING PURPOSES
     const mail1 = {
@@ -116,6 +135,7 @@ export default function Dashboard() {
         time: "November 18, 2020 at 12:00:00 AM"
     };
     const mailArray = [mail1, mail2];
+    console.log("props", props);
 
     return (
         <div>
@@ -131,6 +151,7 @@ export default function Dashboard() {
                                     size="large"
                                     className={classes.button}
                                     startIcon={<AddIcon />}
+                                    onClick={e => { history.push('/newmail') }}
                                 >
                                     New Pigeon Mail
                                 </Button>
@@ -186,3 +207,16 @@ export default function Dashboard() {
         </div>
     );
 }
+
+// class DashboardClass extends React.Component {
+//     render(){
+//         return(<Dashboard />);
+//     }
+// }
+
+
+const mapStateToProps = state => ({ state });
+
+const mapActionsToProps = {}
+
+export default connect(mapStateToProps, mapActionsToProps)(Dashboard);
