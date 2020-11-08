@@ -1,7 +1,7 @@
 import express from 'express';
 import { firestore } from 'firebase-admin';
 import { db } from '../services/firebase';
-import { getDistanceFromLatLonInKm } from '../helpers/distance';
+import { getDistanceFromLatLonInKm, latLonFromGeoPoint } from '../helpers/location';
 
 // Pigeon speed, in km/hr
 const PIGEON_SPEED = 99;
@@ -17,7 +17,6 @@ const getStationRef = stationId => stationsRef.doc(stationId);
 
 router.post('/list', async (req, res) => {
     try {
-
         const { userId } = req.body;
         console.log('POST /messages/list: ', userId);
 
@@ -34,7 +33,7 @@ router.post('/list', async (req, res) => {
                 receiver: doc.get('receiver'),
                 content: doc.get('content'),
                 timestamp: doc.get('timestamp').valueOf(),
-                isSent: doc.get('isSent'), // TODO: filter by this too?
+                arrived: doc.get('arrived'), // TODO: filter by this too?
             }));
 
         res.status(200).json({
@@ -64,21 +63,13 @@ async function prepareSend(userId, receiver, pigeonId) {
     } else if (!receiverSnapshot.exists) {
         throw 'receiver station does not exist';
     }
-    const senderLocation = senderSnapshot.get('location');
-    const receiverLocation = receiverSnapshot.get('location');
 
-    const senderLatLon = {
-        lat: senderLocation.latitude,
-        lon: senderLocation.longitude,
-    };
-    const receiverLatLon = {
-        lat: receiverLocation.latitude,
-        lon: receiverLocation.longitude,
-    }
+    const senderLocation = latLonFromGeoPoint(senderSnapshot.get('location'));
+    const receiverLocation = latLonFromGeoPoint(receiverSnapshot.get('location'))
 
     const distance = getDistanceFromLatLonInKm(
-        senderLatLon.lat, senderLatLon.lon,
-        receiverLatLon.lat, receiverLatLon.lon,
+        senderLocation.lat, senderLocation.lon,
+        receiverLocation.lat, receiverLocation.lon,
     );
 
     const duration = distance / PIGEON_SPEED * 60 * 60; // seconds
@@ -87,8 +78,8 @@ async function prepareSend(userId, receiver, pigeonId) {
         sender,
         distance,
         duration,
-        receiverLocation: receiverLatLon,
-        senderLocation: senderLatLon,
+        receiverLocation,
+        senderLocation,
     };
 }
 
@@ -130,13 +121,13 @@ router.post('/send', async (req, res) => {
             receiver,
             content,
             timestamp,
-            isSent: false,
+            arrived: false,
         };
 
         const newMessageRef = messagesRef.doc();
         setTimeout(() => {
             newMessageRef.update({
-                isSent: true,
+                arrived: true,
             });
         }, duration * 1000);
 

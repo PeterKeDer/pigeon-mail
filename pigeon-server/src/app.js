@@ -3,6 +3,7 @@ import createError from 'http-errors';
 import express from 'express';
 import 'regenerator-runtime';
 import messageController from './controllers/messageController';
+import userController from './controllers/userController';
 
 const port = 8080;
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/messages', messageController);
+app.use('/user', userController);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
