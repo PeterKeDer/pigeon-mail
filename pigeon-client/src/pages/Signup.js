@@ -1,16 +1,18 @@
 import "./Login.css";
 import "../helpers/auth.js"
 import { signIn, signUp } from "../helpers/auth.js";
+import {} from "../"
 import React from "react";
 
 class Signup extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {email: "", password: "", passwordConfirm: ""};
+        this.state = {email: "", password: "", passwordConfirm: "", errorMatchPassword: false};
     
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
+        this.handleChangePasswordConfirm = this.handleChangePasswordConfirm.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
@@ -26,13 +28,18 @@ class Signup extends React.Component {
     }
     
     handleSubmit(event) {
-        console.log(this.state.email + ", " + this.state.password + ", " + this.state.passwordConfirm);
-        signUp(this.state.email, this.state.password); 
+        if (this.verifyInputs()) {
+            console.log(this.state.email + ", " + this.state.password + ", " + this.state.passwordConfirm);
+            signUp(this.state.email, this.state.password); 
+        } else {
+            this.setState({ errorMatchPassword: true });
+            console.log("passwords do not match");
+        }
         event.preventDefault();
     }
 
     verifyInputs() {
-        return (this.state.email.length > 0) && (this.state.password > 0) && (this.state.passwordConfirm > 0) && (this.state.password == this.state.passwordConfirm);
+        return (this.state.email.length > 0) && (this.state.password.length > 0) && (this.state.passwordConfirm.length > 0) && (this.state.password === this.state.passwordConfirm);
     }
     
     render() {
@@ -48,9 +55,10 @@ class Signup extends React.Component {
                 </label>
                 <label>
                     Confirm Password
-                    <input type="text" value={this.state.password} onChange={this.handleChangePasswordConfirm} />
+                    <input type="text" value={this.state.passwordConfirm} onChange={this.handleChangePasswordConfirm} />
                 </label>
-                <input type="submit" value="Sign Up" disabled={!this.verifyInputs}/>
+                <input type="submit" value="Sign Up"/>
+                {this.state.errorMatchPassword ? <h4>Passwords do not match.</h4> : <></>}
             </form>
         );
     }
