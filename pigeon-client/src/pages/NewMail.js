@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -18,6 +18,10 @@ import SendIcon from '@material-ui/icons/Send';
 import Bar from './Components';
 
 import SimpleMap from './LocationSelect';
+import { connect } from 'react-redux';
+import { getStationId, getPigeonList, getUserId } from '../redux/selectors';
+import Axios from 'axios';
+import { APIv1Endpoint } from './endpoint';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -81,14 +85,31 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function NewMail() {
+function NewMail(props) {
+    const availablePigeons = props.pigeons
+        .filter(pigeon => pigeon.messageId === null);
 
     const classes = useStyles();
-    const [age, setAge] = React.useState('');
-    const [value, setValue] = React.useState('Controlled');
+    const [pigeonId, setPigeonId] = useState(availablePigeons[0].id);
+    const [receiver, setReceiver] = useState('');
+    // const [message, setMessage] = useState('');
+    let message = '';
 
     const handleChange = (event) => {
-        setValue(event.target.value);
+        setPigeonId(event.target.value);
+    };
+
+    const handleSendButtonClick = () => {
+        // TODO: validate stuffs
+        Axios.post(APIv1Endpoint + '/messages/send', {
+            userId: props.userId,
+            receiver,
+            pigeonId,
+            content: message,
+        })
+            .then(res => {
+                console.log('send message id', res.data.id);
+            });
     };
 
     return (
@@ -107,7 +128,7 @@ export default function NewMail() {
                                     <TextField
                                         id="outlined-read-only-input"
                                         label="Local Station"
-                                        defaultValue="5PX7ZX"
+                                        defaultValue={props.stationId}
                                         InputProps={{
                                             readOnly: true,
                                         }}
@@ -118,43 +139,33 @@ export default function NewMail() {
                                     <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>To: &nbsp; &nbsp; </Typography>
                                 </Grid>
                                 <Grid item xs={11}>
-                                    <FormControl variant="outlined" className={classes.formControl}>
-                                        <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-outlined-label"
-                                            id="demo-simple-select-outlined"
-                                            value={age}
-                                            onChange={handleChange}
-                                            label="Age"
-                                        >
-                                            <MenuItem value="">
-                                                <em>None</em>
-                                            </MenuItem>
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                    <TextField
+                                        id="outlined-input"
+                                        label="Destination Station"
+                                        defaultValue=""
+                                        variant="outlined"
+                                        value={receiver}
+                                        onChange={event => setReceiver(event.target.value)}
+                                    />
                                 </Grid>
                                 <Grid item xs={1}>
                                     <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>Pigeon </Typography>
                                 </Grid>
                                 <Grid item xs={11}>
                                     <FormControl variant="outlined" className={classes.formControl}>
-                                        <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
+                                        <InputLabel id="demo-simple-select-outlined-label">Select a Pigeon</InputLabel>
                                         <Select
                                             labelId="demo-simple-select-outlined-label"
                                             id="demo-simple-select-outlined"
-                                            value={age}
+                                            value={pigeonId}
                                             onChange={handleChange}
                                             label="Select a pigeon"
                                         >
-                                            <MenuItem value="">
-                                                <em>None</em>
-                                            </MenuItem>
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
+                                            {availablePigeons.map(pigeon =>
+                                                <MenuItem value={pigeon.id}>
+                                                    {pigeon.name} - {pigeon.species}
+                                                </MenuItem>
+                                            )}
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -164,11 +175,12 @@ export default function NewMail() {
                                 <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>Message </Typography>
                                 <TextField
                                     id="outlined-multiline-static"
-                                    label="Multiline"
+                                    label="Message"
                                     multiline
                                     rows={4}
-                                    defaultValue="Default Value"
                                     variant="outlined"
+                                    defaultValue=""
+                                    onChange={event => message = event.target.value}
                                     style={{ width: "500px" }}
                                 />
                             </div>
@@ -178,6 +190,7 @@ export default function NewMail() {
                                     color="primary"
                                     size="large"
                                     className={classes.button}
+                                    onClick={handleSendButtonClick}
                                     startIcon={<SendIcon />}>
                                     Send
                                 </Button>
@@ -197,3 +210,11 @@ export default function NewMail() {
         </div>
     );
 }
+
+const mapStateToProps = state => ({
+    userId: getUserId(state),
+    stationId: getStationId(state),
+    pigeons: getPigeonList(state),
+});
+
+export default connect(mapStateToProps)(NewMail);

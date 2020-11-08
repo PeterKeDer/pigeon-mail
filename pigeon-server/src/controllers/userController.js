@@ -25,6 +25,7 @@ router.post('/getInfo', async (req, res) => {
                 .docs
                 .map(doc => ({
                     id: doc.id,
+                    name: doc.get('name'),
                     species: doc.get('species'),
                     location: latLonFromGeoPoint(doc.get('location')),
                     messageId: doc.get('messageId') || null,
@@ -46,6 +47,7 @@ router.post('/getInfo', async (req, res) => {
 router.post('/initialize', async (req, res) => {
     const { userId, stationId, location } = req.body;
     const { lat, lon } = location;
+    console.log('POST initialize:', userId, stationId, location);
 
     if (!validateStationId(stationId)) {
         return res.send(400).send('ur stationid is wrong');
@@ -83,10 +85,10 @@ router.post('/initialize', async (req, res) => {
             const pigeonRef = pigeonsRef.doc();
             batch.set(pigeonRef, {
                 ...pigeon,
-                message: null,
+                messageId: null,
                 location: geoPoint,
             });
-            pigeonIds.push(pigeonRef);
+            pigeonIds.push(pigeonRef.id);
         });
 
         batch.set(userRef, {

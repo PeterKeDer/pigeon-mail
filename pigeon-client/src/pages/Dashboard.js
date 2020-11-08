@@ -26,7 +26,7 @@ import TextField from '@material-ui/core/TextField';
 import Bar from './Components';
 
 import { getMessageList, getUserId } from "../redux/selectors.js";
-import { setMessageList } from "../redux/actions.js";
+import { setMessageList, setStationId, setPigeonList } from "../redux/actions.js";
 
 import Axios from "axios";
 
@@ -135,6 +135,11 @@ function Dashboard(props) {
             .then(res => {
                 console.log("Base: ", res.data.exists);
                 if (!res.data.exists) handleClickOpen();
+                else {
+                    const { stationId, pigeons } = res.data;
+                    props.setPigeonList(pigeons);
+                    props.setStationId(stationId);
+                }
             })
             .catch(err => {
                 console.error(err.response);
@@ -257,6 +262,6 @@ const mapStateToProps = state => ({
     userId: getUserId(state)
 });
 
-const mapActionsToProps = { setMessageList };
+const mapActionsToProps = { setMessageList, setStationId, setPigeonList };
 
 export default connect(mapStateToProps, mapActionsToProps)(Dashboard);

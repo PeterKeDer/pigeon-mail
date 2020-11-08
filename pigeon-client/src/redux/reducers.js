@@ -1,8 +1,10 @@
-import { SET_MESSAGE_LIST, SET_USER_ID } from './actionTypes';
+import { SET_MESSAGE_LIST, SET_USER_ID, SET_STATION_ID, SET_PIGEON_LIST } from './actionTypes';
 
 const initialState = {
   userId: null,
-  messageList: []
+  messageList: [],
+  stationId: null,
+  pigeonList: [],
 };
 
 export default function(state = initialState, action) {
@@ -21,6 +23,18 @@ export default function(state = initialState, action) {
         messageList,
       };
     }
+    case SET_STATION_ID:
+      const { stationId } = action.payload;
+      return {
+        ...state,
+        stationId,
+      };
+    case SET_PIGEON_LIST:
+      const { pigeonList } = action.payload;
+      return {
+        ...state,
+        pigeonList,
+      }
     default: {
       return state;
     }
