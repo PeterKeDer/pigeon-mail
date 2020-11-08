@@ -2,15 +2,14 @@ import express from 'express';
 import { firestore } from 'firebase-admin';
 import { db } from '../services/firebase';
 import { getDistanceFromLatLonInKm, latLonFromGeoPoint } from '../helpers/location';
-
-// Pigeon speed, in km/hr
-const PIGEON_SPEED = 99;
+import { getSpeed } from '../helpers/pigeons';
 
 const router = express.Router();
 
 // TODO: move this inside firebase.js?
 const messagesRef = db.collection('messages');
 const usersRef = db.collection('users');
+const pigeonsRef = db.collection('pigeons');
 const getUserRef = userId => usersRef.doc(userId);
 const stationsRef = db.collection('stations');
 const getStationRef = stationId => stationsRef.doc(stationId);
@@ -47,10 +46,25 @@ router.post('/list', async (req, res) => {
 
 /// Prepare sending a message by checking stations, checking distances, etc.
 async function prepareSend(userId, receiver, pigeonId) {
-    const sender = (await getUserRef(userId).get()).get('stationId');
+    const userSnapshot = await getUserRef(userId).get();
+    const sender = userSnapshot.get('stationId');
+    const pigeonIds = userSnapshot.get('pigeonIds');
 
     if (sender === receiver) {
         throw 'cannot send message to self';
+    }
+
+    if (!pigeonIds.includes(pigeonId)) {
+        throw 'does not own the pigeon';
+    }
+
+    const pigeonRef = pigeonsRef.doc(pigeonId);
+    const pigeonSnapshot = await pigeonRef.get();
+
+    if (!pigeonSnapshot.exists) {
+        throw 'your stupid pigeon does not exist';
+    } else if (pigeonSnapshot.get('messageId') !== null) {
+        throw 'pigeon already in use';
     }
 
     const [senderSnapshot, receiverSnapshot] = await Promise.all([
@@ -72,7 +86,7 @@ async function prepareSend(userId, receiver, pigeonId) {
         receiverLocation.lat, receiverLocation.lon,
     );
 
-    const duration = distance / PIGEON_SPEED * 60 * 60; // seconds
+    const duration = distance / getSpeed(pigeonSnapshot.get('species')) * 60 * 60; // seconds
 
     return {
         sender,
@@ -125,10 +139,21 @@ router.post('/send', async (req, res) => {
         };
 
         const newMessageRef = messagesRef.doc();
+
+        const pigeonRef = pigeonsRef.doc(pigeonId);
+        await pigeonRef.update({
+            messageId: newMessageRef.id,
+        });
+
         setTimeout(() => {
-            newMessageRef.update({
-                arrived: true,
-            });
+            Promise.all([
+                newMessageRef.update({
+                    arrived: true,
+                }),
+                pigeonRef.update({
+                    messageId: null,
+                }),
+            ]).then(() => {});
         }, duration * 1000);
 
         await newMessageRef.set(messageData);

@@ -51,6 +51,10 @@ export const PIGEON_SPECIES = [
     }
 ];
 
+export function getSpeed(species) {
+    return PIGEON_SPECIES.find(s => s.name === species).speed || 20;
+}
+
 export function randomPigeons(n) {
     let pigeons = [];
     for (let i = 0; i < n; i++) {

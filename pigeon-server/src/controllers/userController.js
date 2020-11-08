@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post('/getInfo', async (req, res) => {
     const { userId } = req.body;
+    console.log('POST user getInfo:', userId);
 
     try {
         let userRef = db.collection('users').doc(userId);
@@ -18,10 +19,13 @@ router.post('/getInfo', async (req, res) => {
                 exists: false,
             });
         } else {
-            const pigeons = (await userRef.collection('pigeons').get()).docs
+            const pigeons = (await db.collection('pigeons')
+                .where(firestore.FieldPath.documentId(), 'in', userSnapshot.get('pigeonIds'))
+                .get())
+                .docs
                 .map(doc => ({
                     id: doc.id,
-                    type: doc.get('type'),
+                    species: doc.get('species'),
                     location: latLonFromGeoPoint(doc.get('location')),
                     messageId: doc.get('messageId') || null,
                 }));
@@ -73,17 +77,22 @@ router.post('/initialize', async (req, res) => {
             userId,
         });
 
-        batch.set(userRef, {
-            stationId,
-        });
-
-        const userPigeonsRef = userRef.collection('pigeons');
+        const pigeonIds = [];
+        const pigeonsRef = db.collection('pigeons');
         pigeons.forEach(pigeon => {
-            batch.set(userPigeonsRef.doc(), {
+            const pigeonRef = pigeonsRef.doc();
+            batch.set(pigeonRef, {
                 ...pigeon,
+                message: null,
                 location: geoPoint,
             });
-        })
+            pigeonIds.push(pigeonRef);
+        });
+
+        batch.set(userRef, {
+            stationId,
+            pigeonIds,
+        });
 
         await batch.commit();
 

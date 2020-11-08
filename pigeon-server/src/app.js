@@ -2,6 +2,7 @@ import http from 'http';
 import createError from 'http-errors';
 import express from 'express';
 import 'regenerator-runtime';
+import cors from 'cors';
 import messageController from './controllers/messageController';
 import userController from './controllers/userController';
 
@@ -9,6 +10,8 @@ const port = 8080;
 
 const app = express();
 const server = http.createServer(app);
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
