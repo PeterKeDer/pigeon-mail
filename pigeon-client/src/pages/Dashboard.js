@@ -133,7 +133,7 @@ function DisplayMail(props) {
                     <Grid item xs={3}>
                         {console.log(mail)}
                         {/* work in progress */}
-                        <ProgressBar completed={Math.random() * 100} bgcolor="blue" />
+                        <ProgressBar completed={props.full ? 100 : Math.random() * 100} bgcolor="blue" />
                     </Grid>
                 </Grid>
             ))}
@@ -315,13 +315,13 @@ function Dashboard(props) {
                                     <Typography variant="h5" component="h2" style={{ paddingBottom: "10px" }}>
                                         Correspondence
                                         </Typography>
-                                    <DisplayMail display={mailArray} />
+                                    <DisplayMail display={mailArray} full={true} />
                                 </CardContent>
                                 <CardActions>
                                     <Button size="small">Manage</Button>
-                                    <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+                                    {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                                         Open simple dialog
-                                    </Button>
+                                    </Button> */}
                                 </CardActions>
                             </Card>
                         </Grid>
