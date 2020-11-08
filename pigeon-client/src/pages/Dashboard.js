@@ -26,7 +26,7 @@ import TextField from '@material-ui/core/TextField';
 import Bar from './Components';
 
 import { getMessageList, getUserId, getLocation } from "../redux/selectors.js";
-import { setMessageList, setLocation, setPigeonList } from "../redux/actions.js";
+import { setMessageList, setLocation, setPigeonList, setStationId } from "../redux/actions.js";
 
 import Axios from "axios";
 
@@ -118,6 +118,20 @@ function Dashboard(props) {
 
     const handleClose = () => {
         setOpen(false);
+        Axios.post(APIv1Endpoint + "/user/getInfo", {
+            userId: props.userId
+        })
+            .then(res => {
+                if (!res.data.exists) handleClickOpen();
+                else {
+                    const { stationId, pigeons } = res.data;
+                    props.setPigeonList(pigeons);
+                    props.setStationId(stationId);
+                }
+            })
+            .catch(err => {
+                console.error(err.response);
+            })
     };
 
     useEffect(() => {

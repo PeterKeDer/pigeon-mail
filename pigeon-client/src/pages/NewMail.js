@@ -11,7 +11,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Icon from '@material-ui/core/Icon';
-
+import {useHistory} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 
 import SendIcon from '@material-ui/icons/Send';
@@ -89,6 +89,7 @@ function NewMail(props) {
     const availablePigeons = props.pigeons
         .filter(pigeon => pigeon.messageId === null);
 
+    const history = useHistory();
     const classes = useStyles();
     const [pigeonId, setPigeonId] = useState(availablePigeons[0].id);
     const [receiver, setReceiver] = useState('');
@@ -109,6 +110,7 @@ function NewMail(props) {
         })
             .then(res => {
                 console.log('send message id', res.data.id);
+                history.push('./dashboard');
             });
     };
 
