@@ -1,8 +1,12 @@
-import { SET_MESSAGE_LIST, SET_USER_ID } from './actionTypes';
+import { SET_MESSAGE_LIST, SET_USER_ID, SET_LOCATION } from './actionTypes';
 
 const initialState = {
   userId: null,
-  messageList: []
+  messageList: [],
+  location: {
+    latitude: 0,
+    longitude: 0
+  }
 };
 
 export default function(state = initialState, action) {
@@ -19,6 +23,13 @@ export default function(state = initialState, action) {
       return {
         ...state,
         messageList,
+      };
+    }
+    case SET_LOCATION: {
+      const { location } = action.payload;
+      return {
+        ...state,
+        location,
       };
     }
     default: {
