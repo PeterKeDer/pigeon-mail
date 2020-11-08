@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
@@ -25,8 +25,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from '@material-ui/core/TextField';
 import Bar from './Components';
 
-import { getMessageList, getUserId } from "../redux/selectors.js";
-import { setMessageList, setStationId, setPigeonList } from "../redux/actions.js";
+import { getMessageList, getUserId, getLocation } from "../redux/selectors.js";
+import { setMessageList, setLocation, setPigeonList } from "../redux/actions.js";
 
 import Axios from "axios";
 
@@ -133,7 +133,6 @@ function Dashboard(props) {
             })
         Axios.post(APIv1Endpoint + "/user/getInfo", req)
             .then(res => {
-                console.log("Base: ", res.data.exists);
                 if (!res.data.exists) handleClickOpen();
                 else {
                     const { stationId, pigeons } = res.data;
@@ -144,16 +143,47 @@ function Dashboard(props) {
             .catch(err => {
                 console.error(err.response);
             })
+        navigator.geolocation.getCurrentPosition(function (position) {
+            props.setLocation({
+                location: {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
+            })
+        });
 
     }, []);
 
     const mailArray = props.messageList;
+    const [stationName, setStationName] = React.useState('');
+
+    function createStation(name){
+        const req = {
+            userId: props.userId,
+            stationId: name,
+            location: {
+                lat: props.location.location.latitude,
+                lon: props.location.location.longitude
+            }
+        }
+        console.log("req",req);
+        // console.log("props",props);
+        Axios.post(APIv1Endpoint + "/user/initialize", req)
+            .then(res => {
+                console.log("success");
+                setTimeout(function() {
+                    handleClose();
+                }, 500);
+            })
+            .catch(err => {
+                console.error(err.response);
+            })
+    }
 
     return (
         <div>
             <Dialog
                 open={open}
-                onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -162,18 +192,20 @@ function Dashboard(props) {
                     <DialogContentText id="alert-dialog-description">
                         First time using Pigeon Mail in this location? Set up a station here!
                     </DialogContentText>
-                    <div style={{paddingTop:"10px", paddingBottom:"10px"}}>
-                    <TextField
-                        required
-                        id="outlined-required"
-                        label="Station Name"
-                        variant="outlined"
-                    />
+                    <div style={{ paddingTop: "10px", paddingBottom: "10px" }}>
+                        <TextField
+                            required
+                            id="outlined-required"
+                            label="Station Name"
+                            variant="outlined"
+                            value={stationName}
+                            onChange={event => setStationName(event.target.value)}
+                        />
                     </div>
                     <SimpleMap />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={console.log(props)} color="primary" autoFocus>
+                    <Button onClick={e => createStation(stationName)} color="primary" autoFocus>
                         Create Station
                     </Button>
                 </DialogActions>
@@ -259,9 +291,10 @@ function Dashboard(props) {
 
 const mapStateToProps = state => ({
     messageList: getMessageList(state),
-    userId: getUserId(state)
+    userId: getUserId(state),
+    location: getLocation(state)
 });
 
-const mapActionsToProps = { setMessageList, setStationId, setPigeonList };
+const mapActionsToProps = { setMessageList, setLocation, setStationId, setPigeonList };
 
 export default connect(mapStateToProps, mapActionsToProps)(Dashboard);

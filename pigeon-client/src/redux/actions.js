@@ -1,4 +1,4 @@
-import { SET_MESSAGE_LIST, SET_USER_ID, SET_STATION_ID, SET_PIGEON_LIST } from './actionTypes';
+import { SET_MESSAGE_LIST, SET_USER_ID, SET_STATION_ID, SET_PIGEON_LIST, SET_LOCATION } from './actionTypes';
 
 export const setUserId = userId => ({
   type: SET_USER_ID,
@@ -27,3 +27,10 @@ export const setPigeonList = pigeonList => ({
     pigeonList,
   },
 })
+
+export const setLocation = location => ({
+  type: SET_LOCATION,
+  payload: {
+    location,
+  },
+});

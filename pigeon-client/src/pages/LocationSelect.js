@@ -15,21 +15,23 @@ class SimpleMap extends Component {
 
   constructor(props) {
     super(props);
+    let long, lati;
+    navigator.geolocation.getCurrentPosition(function (position) {
+      lati = position.coords.latitude;
+      long = position.coords.longitude;
+    });
     this.state = {
       center: {
-        lat: 0,
-        lng: 0
+        lat: lati,
+        lng: long
       },
       zoom: 11
     };
   }
 
   componentDidMount() {
-    console.log("MAP",this);
     let currentComponent = this;
     navigator.geolocation.getCurrentPosition(function (position) {
-      console.log("Latitude is :", position.coords.latitude);
-      console.log("Longitude is :", position.coords.longitude);
       const center = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
