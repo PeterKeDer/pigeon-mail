@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
@@ -8,12 +9,20 @@ import Button from '@material-ui/core/Button';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-
+import { APIv1Endpoint } from "./endpoint";
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 
+import PropTypes from 'prop-types';
+
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import SimpleMap from './LocationSelect';
 import AddIcon from '@material-ui/icons/Add';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -60,12 +69,22 @@ const useStyles = makeStyles((theme) => ({
 function DisplayMail(props) {
     const classes = useStyles();
     const mailArray = props.display;
-    const req= {
-        userId: "n1gg4",
+    const req = {
+        userId: "4p0bD8XA1ONCe1OJWXmvFzmxg7u1",
     }
-    Axios.post("http://192.168.0.51:8080/messages/list", req)
+    useEffect(() => {
+        Axios.post(APIv1Endpoint + "/user/getInfo", req)
             .then(res => {
-                console.log(res);
+                console.log("status:", res);
+            })
+            .catch(err => {
+                console.error(err.response);
+            })
+    });
+    useEffect(() => {
+        Axios.post(APIv1Endpoint + "/messages/list", req)
+            .then(res => {
+                console.log("read:", res);
                 // toast.success(`campaignInfo was added.`);
                 // setTimeout(function () {
                 //     info.object.props.history.push('/campaign/campaign');
@@ -74,27 +93,32 @@ function DisplayMail(props) {
             .catch(err => {
                 console.error(err.response);
             })
+    });
 
-            
+
+
+
+
+
     return (
         <>
-        <Grid container spacing={3} >
-                    <Grid item xs={3}>
-                        From
+            <Grid container spacing={3} >
+                <Grid item xs={3}>
+                    From
                     </Grid>
-                    <Grid item xs={6}>
-                        Content
+                <Grid item xs={6}>
+                    Content
                     </Grid>
-                    <Grid item xs={3}>
-                        Recieved Time
+                <Grid item xs={3}>
+                    Recieved Time
                     </Grid>
-                </Grid>
-        {mailArray.map((mail, i) => (
-                <Grid container 
-                spacing={3} 
-                key={i} 
-                onClick={e => console.log("Clicked")}
-                className={classes.mailTab}>
+            </Grid>
+            {mailArray.map((mail, i) => (
+                <Grid container
+                    spacing={3}
+                    key={i}
+                    onClick={e => console.log("Clicked")}
+                    className={classes.mailTab}>
                     <Grid item xs={3}>
                         {mail.sender}
                     </Grid>
@@ -105,19 +129,12 @@ function DisplayMail(props) {
                         {mail.time}
                     </Grid>
                 </Grid>
-        ))}
+            ))}
         </>
     );
 }
-function Dashboard(props) {
 
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {email: '', password: ''};
-    //     this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    //     this.handleChangePassword = this.handleChangePassword.bind(this);
-    //     this.handleSubmit = this.handleSubmit.bind(this);
-    // }
+function Dashboard(props) {
     const classes = useStyles();
     let history = useHistory();
 
@@ -135,10 +152,40 @@ function Dashboard(props) {
         time: "November 18, 2020 at 12:00:00 AM"
     };
     const mailArray = [mail1, mail2];
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     console.log("props", props);
 
     return (
         <div>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Welcome!"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        First time using Pigeon Mail in this location? Set up a station here!
+          </DialogContentText>
+          
+          <SimpleMap />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary" autoFocus>
+                        Create Station
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <div>
                 <Bar />
                 <div className={classes.root}>
@@ -175,31 +222,34 @@ function Dashboard(props) {
                             </div>
                         </Grid>
                         <Grid item xs>
-                                <Card className={classes.card}>
-                                    <CardContent>
-                                        <Typography variant="h5" component="h2" style={{paddingBottom:"10px"}}>
-                                            En Route
+                            <Card className={classes.card}>
+                                <CardContent>
+                                    <Typography variant="h5" component="h2" style={{ paddingBottom: "10px" }}>
+                                        En Route
                                         </Typography>
-                                        <DisplayMail display={mailArray} />
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button variant="contained" color="primary" size="medium">View on map</Button>
-                                    </CardActions>
-                                </Card>
-                                <div style={{ paddingTop: "10px" }}>
+                                    <DisplayMail display={mailArray} />
+                                </CardContent>
+                                <CardActions>
+                                    <Button variant="contained" color="primary" size="medium">View on map</Button>
+                                </CardActions>
+                            </Card>
+                            <div style={{ paddingTop: "10px" }}>
 
-                                </div>
-                                <Card className={classes.card}>
-                                    <CardContent>
-                                        <Typography variant="h5" component="h2" style={{paddingBottom:"10px"}}>
-                                            Correspondence
+                            </div>
+                            <Card className={classes.card}>
+                                <CardContent>
+                                    <Typography variant="h5" component="h2" style={{ paddingBottom: "10px" }}>
+                                        Correspondence
                                         </Typography>
-                                        <DisplayMail display={mailArray} />
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button size="small">Manage</Button>
-                                    </CardActions>
-                                </Card>
+                                    <DisplayMail display={mailArray} />
+                                </CardContent>
+                                <CardActions>
+                                    <Button size="small">Manage</Button>
+                                    <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+                                        Open simple dialog
+                                    </Button>
+                                </CardActions>
+                            </Card>
                         </Grid>
                     </Grid>
                 </div>
