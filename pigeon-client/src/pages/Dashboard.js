@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
@@ -18,6 +18,9 @@ import AddIcon from '@material-ui/icons/Add';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import Bar from './Components';
+
+import {getMessageList, getUserId} from "../redux/selectors.js";
+import {setMessageList} from "../redux/actions.js";
 
 import Axios from "axios";
 
@@ -60,22 +63,7 @@ const useStyles = makeStyles((theme) => ({
 function DisplayMail(props) {
     const classes = useStyles();
     const mailArray = props.display;
-    const req= {
-        userId: "n1gg4",
-    }
-    Axios.post("http://192.168.0.51:8080/messages/list", req)
-            .then(res => {
-                console.log(res);
-                // toast.success(`campaignInfo was added.`);
-                // setTimeout(function () {
-                //     info.object.props.history.push('/campaign/campaign');
-                // }, 1000);
-            })
-            .catch(err => {
-                console.error(err.response);
-            })
 
-            
     return (
         <>
         <Grid container spacing={3} >
@@ -121,6 +109,25 @@ function Dashboard(props) {
     const classes = useStyles();
     let history = useHistory();
 
+    useEffect(() => {
+        const req = {
+            userId: props.userId
+        }
+        // console.log('userid', props.userId);
+        Axios.post("http://192.168.0.51:8080/messages/list", req)
+            .then(res => {
+                console.log('res: ',res);
+                // toast.success(`campaignInfo was added.`);
+                // setTimeout(function () {
+                //     info.object.props.history.push('/campaign/campaign');
+                // }, 1000);
+                props.setMessageList(res.data.messages);
+            })
+            .catch(err => {
+                console.error(err.response);
+            })
+    }, []);
+
     // FOR TESTING PURPOSES
     const mail1 = {
         content: "patrick dont know how to use github",
@@ -134,8 +141,8 @@ function Dashboard(props) {
         reciever: "Patrick",
         time: "November 18, 2020 at 12:00:00 AM"
     };
-    const mailArray = [mail1, mail2];
-    console.log("props", props);
+    const mailArray = props.messageList;
+    // console.log("props", props);
 
     return (
         <div>
@@ -215,8 +222,11 @@ function Dashboard(props) {
 // }
 
 
-const mapStateToProps = state => ({ state });
+const mapStateToProps = state => ({
+    messageList: getMessageList(state),
+    userId: getUserId(state)
+});
 
-const mapActionsToProps = {}
+const mapActionsToProps = {setMessageList};
 
 export default connect(mapStateToProps, mapActionsToProps)(Dashboard);
