@@ -2,7 +2,8 @@ import "./Login.css";
 import "../helpers/auth.js"
 import { signIn, signUp } from "../helpers/auth.js";
 import React from "react";
-import {connect, Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
+import {connect} from "react-redux";
 import {getUserId} from "../redux/selectors.js";
 
 class Login extends React.Component {
@@ -61,5 +62,5 @@ const mapStateToProps = (state) => {
     }
 }
 
-return connect(mapStateToProps)(Login);
+export default connect(mapStateToProps)(Login);
     
