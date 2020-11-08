@@ -66,6 +66,40 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const ProgressBar = (props) => {
+    const { bgcolor, completed } = props;
+
+    const containerStyles = {
+      height: 6,
+      width: '100%',
+      backgroundColor: "#e0e0de",
+      borderRadius: 50,
+      margin: 0
+    }
+
+    const fillerStyles = {
+      height: '100%',
+      width: `${completed}%`,
+      backgroundColor: bgcolor,
+      borderRadius: 'inherit',
+      textAlign: 'right'
+    }
+
+    const labelStyles = {
+      padding: 5,
+      color: 'white',
+      fontWeight: 'bold'
+    }
+
+    return (
+      <div style={containerStyles}>
+        <div style={fillerStyles}>
+          <span style={labelStyles}></span>
+        </div>
+      </div>
+    );
+};
+
 function DisplayMail(props) {
     const classes = useStyles();
     const mailArray = props.display;
@@ -77,11 +111,11 @@ function DisplayMail(props) {
                 <Grid item xs={3}>
                     From
                     </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                     Content
                     </Grid>
                 <Grid item xs={3}>
-                    Recieved Time
+                    Progress
                     </Grid>
             </Grid>
             {mailArray.map((mail, i) => (
@@ -93,11 +127,13 @@ function DisplayMail(props) {
                     <Grid item xs={3}>
                         {mail.sender}
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={5}>
                         {mail.content}
                     </Grid>
                     <Grid item xs={3}>
-                        {mail.time}
+                        {console.log(mail)}
+                        {/* work in progress */}
+                        <ProgressBar completed={Math.random() * 100} bgcolor="blue" />
                     </Grid>
                 </Grid>
             ))}
