@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
@@ -14,9 +13,6 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-
-import PropTypes from 'prop-types';
-
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -26,7 +22,11 @@ import SimpleMap from './LocationSelect';
 import AddIcon from '@material-ui/icons/Add';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import TextField from '@material-ui/core/TextField';
 import Bar from './Components';
+
+import { getMessageList, getUserId } from "../redux/selectors.js";
+import { setMessageList } from "../redux/actions.js";
 
 import Axios from "axios";
 
@@ -69,35 +69,6 @@ const useStyles = makeStyles((theme) => ({
 function DisplayMail(props) {
     const classes = useStyles();
     const mailArray = props.display;
-    const req = {
-        userId: "4p0bD8XA1ONCe1OJWXmvFzmxg7u1",
-    }
-    useEffect(() => {
-        Axios.post(APIv1Endpoint + "/user/getInfo", req)
-            .then(res => {
-                console.log("status:", res);
-            })
-            .catch(err => {
-                console.error(err.response);
-            })
-    });
-    useEffect(() => {
-        Axios.post(APIv1Endpoint + "/messages/list", req)
-            .then(res => {
-                console.log("read:", res);
-                // toast.success(`campaignInfo was added.`);
-                // setTimeout(function () {
-                //     info.object.props.history.push('/campaign/campaign');
-                // }, 1000);
-            })
-            .catch(err => {
-                console.error(err.response);
-            })
-    });
-
-
-
-
 
 
     return (
@@ -137,21 +108,8 @@ function DisplayMail(props) {
 function Dashboard(props) {
     const classes = useStyles();
     let history = useHistory();
+    let stationExist;
 
-    // FOR TESTING PURPOSES
-    const mail1 = {
-        content: "patrick dont know how to use github",
-        sender: "Kevin",
-        reciever: "Peter",
-        time: "November 18, 2020 at 12:00:00 AM"
-    };
-    const mail2 = {
-        content: "patrick is toxic",
-        sender: "Kevin",
-        reciever: "Patrick",
-        time: "November 18, 2020 at 12:00:00 AM"
-    };
-    const mailArray = [mail1, mail2];
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -162,7 +120,29 @@ function Dashboard(props) {
         setOpen(false);
     };
 
-    console.log("props", props);
+    useEffect(() => {
+        const req = {
+            userId: props.userId
+        }
+        Axios.post(APIv1Endpoint + "/messages/list", req)
+            .then(res => {
+                props.setMessageList(res.data.messages);
+            })
+            .catch(err => {
+                console.error(err.response);
+            })
+        Axios.post(APIv1Endpoint + "/user/getInfo", req)
+            .then(res => {
+                console.log("Base: ", res.data.exists);
+                if (!res.data.exists) handleClickOpen();
+            })
+            .catch(err => {
+                console.error(err.response);
+            })
+
+    }, []);
+
+    const mailArray = props.messageList;
 
     return (
         <div>
@@ -176,12 +156,19 @@ function Dashboard(props) {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         First time using Pigeon Mail in this location? Set up a station here!
-          </DialogContentText>
-          
-          <SimpleMap />
+                    </DialogContentText>
+                    <div style={{paddingTop:"10px", paddingBottom:"10px"}}>
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Station Name"
+                        variant="outlined"
+                    />
+                    </div>
+                    <SimpleMap />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary" autoFocus>
+                    <Button onClick={console.log(props)} color="primary" autoFocus>
                         Create Station
                     </Button>
                 </DialogActions>
@@ -265,8 +252,11 @@ function Dashboard(props) {
 // }
 
 
-const mapStateToProps = state => ({ state });
+const mapStateToProps = state => ({
+    messageList: getMessageList(state),
+    userId: getUserId(state)
+});
 
-const mapActionsToProps = {}
+const mapActionsToProps = { setMessageList };
 
 export default connect(mapStateToProps, mapActionsToProps)(Dashboard);
