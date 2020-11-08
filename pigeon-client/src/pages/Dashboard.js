@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
@@ -70,32 +69,6 @@ const useStyles = makeStyles((theme) => ({
 function DisplayMail(props) {
     const classes = useStyles();
     const mailArray = props.display;
-    const req = {
-        userId: "4p0bD8XA1ONCe1OJWXmvFzmxg7u1",
-    }
-    useEffect(() => {
-        Axios.post(APIv1Endpoint + "/user/getInfo", req)
-            .then(res => {
-                console.log("status:", res);
-            })
-            .catch(err => {
-                console.error(err.response);
-            })
-    });
-    useEffect(() => {
-        Axios.post(APIv1Endpoint + "/messages/list", req)
-            .then(res => {
-                console.log("read:", res);
-                // toast.success(`campaignInfo was added.`);
-                // setTimeout(function () {
-                //     info.object.props.history.push('/campaign/campaign');
-                // }, 1000);
-            })
-            .catch(err => {
-                console.error(err.response);
-            })
-    });
-
 
 
     return (
@@ -169,7 +142,7 @@ function Dashboard(props) {
 
     }, []);
 
-    console.log("props", props);
+    const mailArray = props.messageList;
 
     return (
         <div>
