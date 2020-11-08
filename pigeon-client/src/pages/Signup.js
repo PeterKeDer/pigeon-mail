@@ -27,7 +27,7 @@ class Signup extends React.Component {
     
     handleSubmit(event) {
         console.log(this.state.email + ", " + this.state.password + ", " + this.state.passwordConfirm);
-        signIn(this.state.email, this.state.password); 
+        signUp(this.state.email, this.state.password); 
         event.preventDefault();
     }
 

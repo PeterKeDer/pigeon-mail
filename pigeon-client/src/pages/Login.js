@@ -2,10 +2,16 @@ import "./Login.css";
 import "../helpers/auth.js"
 import { signIn, signUp } from "../helpers/auth.js";
 import React from "react";
+import {connect, Redirect} from "react-router-dom";
+import {getUserId} from "../redux/selectors.js";
 
 class Login extends React.Component {
 
     constructor(props) {
+        if (props.userId !== null) {
+            <Redirect to=""/>
+        }
+
         super(props);
         this.state = {email: "", password: ""};
     
@@ -30,22 +36,30 @@ class Login extends React.Component {
     
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>
-                    Email
-                    <input type="text" value={this.state.email} onChange={this.handleChangeEmail} />
-                </label>
-                <label>
-                    Password
-                    <input type="text" value={this.state.password} onChange={this.handleChangePassword} />
-                </label>
-                <input type="submit" value="Sign In" />
-            </form>
             <div>
-                <Link to="/Signup">Don"t have an account? Sign up here</Link>
+                <form onSubmit={this.handleSubmit}>
+                    <label>
+                        Email
+                        <input type="text" value={this.state.email} onChange={this.handleChangeEmail} />
+                    </label>
+                    <label>
+                        Password
+                        <input type="text" value={this.state.password} onChange={this.handleChangePassword} />
+                    </label>
+                    <input type="submit" value="Sign In" />
+                </form>
+                
+                <Link to="/signup">Don"t have an account? Sign up here</Link>
             </div>
         );
     }
 } 
-export default Login;
+// export default Login;
+const mapStateToProps = (state) => {
+    return {
+        userId: getUserId(state)
+    }
+}
+
+return connect(mapStateToProps)(Login);
     
