@@ -147,17 +147,19 @@ function Login(props) {
                 <CardContent >
                     <div className={classes.textFields}>
                         <form noValidate autoComplete="off">
-                            <TextField id="email" label="Email" onChange={event => setEmail(event.target.value)} />
-                            <TextField id="password" label="Password" onChange={event => setPassword(event.target.value)} />
+                            <TextField fullWidth id="email" label="Email" onChange={event => setEmail(event.target.value)} />
+                            <TextField fullWidth id="password" label="Password" type="password" onChange={event => setPassword(event.target.value)} />
                         </form>
                     </div>
-
-                    <Button variant="contained" size="small" color="primary" onClick={handleSubmit}>
+                    <div style={{marginTop:"10px"}}>
+                        <Button variant="contained" size="small" color="primary" onClick={handleSubmit}>
                         Login
                         </Button>
-                    <Button size="small" color="primary">
+                    <Button size="small" color="primary" onClick={e => { history.push('/signup') }}>
                         Don't have an account? Sign up here
                         </Button>
+                    </div>
+                    
                 </CardContent>
             </Card>
         </div>

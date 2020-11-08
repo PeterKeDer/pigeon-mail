@@ -269,145 +269,143 @@ export default function NewMail() {
 
     return (
         <div>
-            <div>
-                <Bar />
-                <div className={classes.root}>
-                    <Grid container spacing={3}>
-                        <Grid item xs>
-                            <Paper className={classes.newMailPane}>
-                                <Grid container spacing={3}>
+            <Bar />
+            <div className={classes.root}>
+                <Grid container spacing={3}>
+                    <Grid item xs>
+                        <Paper className={classes.newMailPane}>
+                            <Grid container spacing={3}>
 
-                                    <Grid item xs={1}>
-                                        <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>From: </Typography>
-                                    </Grid>
-                                    <Grid item xs={11}>
-                                        <TextField
-                                            id="outlined-read-only-input"
-                                            label="Local Station"
-                                            defaultValue="5PX7ZX"
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                            variant="outlined"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                        <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>To: &nbsp; &nbsp; </Typography>
-                                    </Grid>
-                                    <Grid item xs={11}>
-                                        <FormControl variant="outlined" className={classes.formControl}>
-                                            <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-outlined-label"
-                                                id="demo-simple-select-outlined"
-                                                value={age}
-                                                onChange={handleChange}
-                                                label="Age"
-                                            >
-                                                <MenuItem value="">
-                                                    <em>None</em>
-                                                </MenuItem>
-                                                <MenuItem value={10}>Ten</MenuItem>
-                                                <MenuItem value={20}>Twenty</MenuItem>
-                                                <MenuItem value={30}>Thirty</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                        <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>Pigeon </Typography>
-                                    </Grid>
-                                    <Grid item xs={11}>
-                                        <FormControl variant="outlined" className={classes.formControl}>
-                                            <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-outlined-label"
-                                                id="demo-simple-select-outlined"
-                                                value={age}
-                                                onChange={handleChange}
-                                                label="Select a pigeon"
-                                            >
-                                                <MenuItem value="">
-                                                    <em>None</em>
-                                                </MenuItem>
-                                                <MenuItem value={10}>Ten</MenuItem>
-                                                <MenuItem value={20}>Twenty</MenuItem>
-                                                <MenuItem value={30}>Thirty</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
+                                <Grid item xs={1}>
+                                    <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>From: </Typography>
                                 </Grid>
-
-                                <div className={classes.newMailPaneItem}>
-                                    <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>Message </Typography>
+                                <Grid item xs={11}>
                                     <TextField
-                                        id="outlined-multiline-static"
-                                        label="Multiline"
-                                        multiline
-                                        rows={4}
-                                        defaultValue="Default Value"
+                                        id="outlined-read-only-input"
+                                        label="Local Station"
+                                        defaultValue="5PX7ZX"
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
                                         variant="outlined"
-                                        style={{ width: "500px" }}
                                     />
-                                </div>
-                                <div className={classes.sendButtonBox}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="large"
-                                        className={classes.button}
-                                        startIcon={<SendIcon />}>
-                                        Send
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>To: &nbsp; &nbsp; </Typography>
+                                </Grid>
+                                <Grid item xs={11}>
+                                    <FormControl variant="outlined" className={classes.formControl}>
+                                        <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-outlined-label"
+                                            id="demo-simple-select-outlined"
+                                            value={age}
+                                            onChange={handleChange}
+                                            label="Age"
+                                        >
+                                            <MenuItem value="">
+                                                <em>None</em>
+                                            </MenuItem>
+                                            <MenuItem value={10}>Ten</MenuItem>
+                                            <MenuItem value={20}>Twenty</MenuItem>
+                                            <MenuItem value={30}>Thirty</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>Pigeon </Typography>
+                                </Grid>
+                                <Grid item xs={11}>
+                                    <FormControl variant="outlined" className={classes.formControl}>
+                                        <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-outlined-label"
+                                            id="demo-simple-select-outlined"
+                                            value={age}
+                                            onChange={handleChange}
+                                            label="Select a pigeon"
+                                        >
+                                            <MenuItem value="">
+                                                <em>None</em>
+                                            </MenuItem>
+                                            <MenuItem value={10}>Ten</MenuItem>
+                                            <MenuItem value={20}>Twenty</MenuItem>
+                                            <MenuItem value={30}>Thirty</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                            </Grid>
+
+                            <div className={classes.newMailPaneItem}>
+                                <Typography variant="h6" component="h2" className={classes.newMailPaneDescription}>Message </Typography>
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    label="Multiline"
+                                    multiline
+                                    rows={4}
+                                    defaultValue="Default Value"
+                                    variant="outlined"
+                                    style={{ width: "500px" }}
+                                />
+                            </div>
+                            <div className={classes.sendButtonBox}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    className={classes.button}
+                                    startIcon={<SendIcon />}>
+                                    Send
                                 </Button>
-                                </div>
+                            </div>
 
-                            </Paper>
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <Paper className={classes.paper}>
-                                <div style={{ width: "100px" }}>
-                                    <Map center={fromLonLat(center)} zoom={zoom}>
-                                        <Layers>
-                                            <TileLayer
-                                                source={osm()}
-                                                zIndex={0}
-                                            />
-                                            {showLayer1 && (
-                                                <VectorLayer
-                                                    source={vector({ features: new GeoJSON().readFeatures(geojsonObject, { featureProjection: get('EPSG:3857') }) })}
-                                                    style={styles.MultiPolygon}
-                                                />
-                                            )}
-                                            {showLayer2 && (
-                                                <VectorLayer
-                                                    source={vector({ features: new GeoJSON().readFeatures(geojsonObject2, { featureProjection: get('EPSG:3857') }) })}
-                                                    style={styles.MultiPolygon}
-                                                />
-                                            )}
-                                        </Layers>
-                                        <Controls>
-                                            <FullScreenControl />
-                                        </Controls>
-                                    </Map>
-                                    <div>
-                                        <input
-                                            type="checkbox"
-                                            checked={showLayer1}
-                                            onChange={event => setShowLayer1(event.target.checked)}
-                                        /> Johnson County
-			                            </div>
-                                    <div>
-                                        <input
-                                            type="checkbox"
-                                            checked={showLayer2}
-                                            onChange={event => setShowLayer2(event.target.checked)}
-                                        /> Wyandotte County</div>
-                                </div>
-                            </Paper>
-                        </Grid>
+                        </Paper>
                     </Grid>
-                </div>
+
+
+                    <Grid item xs={6}>
+                        <Paper className={classes.paper}>
+                            <div style={{ width: "100px" }}>
+                                <Map center={fromLonLat(center)} zoom={zoom}>
+                                    <Layers>
+                                        <TileLayer
+                                            source={osm()}
+                                            zIndex={0}
+                                        />
+                                        {showLayer1 && (
+                                            <VectorLayer
+                                                source={vector({ features: new GeoJSON().readFeatures(geojsonObject, { featureProjection: get('EPSG:3857') }) })}
+                                                style={styles.MultiPolygon}
+                                            />
+                                        )}
+                                        {showLayer2 && (
+                                            <VectorLayer
+                                                source={vector({ features: new GeoJSON().readFeatures(geojsonObject2, { featureProjection: get('EPSG:3857') }) })}
+                                                style={styles.MultiPolygon}
+                                            />
+                                        )}
+                                    </Layers>
+                                    <Controls>
+                                        <FullScreenControl />
+                                    </Controls>
+                                </Map>
+                                <div>
+                                    <input
+                                        type="checkbox"
+                                        checked={showLayer1}
+                                        onChange={event => setShowLayer1(event.target.checked)}
+                                    /> Johnson County
+			                            </div>
+                                <div>
+                                    <input
+                                        type="checkbox"
+                                        checked={showLayer2}
+                                        onChange={event => setShowLayer2(event.target.checked)}
+                                    /> Wyandotte County</div>
+                            </div>
+                        </Paper>
+                    </Grid>
+                </Grid>
             </div>
         </div>
     );
