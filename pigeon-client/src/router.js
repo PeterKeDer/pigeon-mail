@@ -4,6 +4,7 @@ import Login from "./pages/Login"
 import Signup from './pages/Signup';
 import Dashboard from "./pages/Dashboard"
 import NewMail from "./pages/NewMail"
+import MessageView from "./pages/MessageView"
 
 export default function App() {
     return (
@@ -17,6 +18,7 @@ export default function App() {
                     <Route path="/signup" component={Signup} />
                     <Route path="/dashboard" component={Dashboard} />
                     <Route path="/newmail" component={NewMail} />
+                    <Route path="/messageview" component={MessageView} />
 
                 </Switch>
             </div>
