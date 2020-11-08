@@ -1,31 +1,32 @@
+// import React, { Component } from 'react';
+// // import { Map, GoogleApiWrapper } from 'google-maps-react';
 
-import React from 'react';
-import { connect } from 'react-redux';
+// const mapStyles = {
+//   width: '100%',
+//   height: '100%'
+// };
 
+// export class MapContainer extends Component {
+//   render() {
+//     return (
+//       <div/>
+//       <Map
+//         google={this.props.google}
+//         zoom={14}
+//         style={mapStyles}
+//         initialCenter={
+//           {
+//             lat: -1.2884,
+//             lng: 36.8233
+//           }
+//         }
+//       />
+//     );
+//   }
+// }
 
+// export default GoogleApiWrapper({
+//   apiKey: 'AIzaSyCvWUDRBHu8E7URlY-xGu3NePrUt6j1GLg'
+// })(MapContainer);
 
-class Map extends React.Component {
-    componentWillMount() {
-
-        // Load shit
-    }
-
-    render() {
-        return (
-
-            <div>
-                <div >
-                    <h1>Campaigns</h1>
-
-                </div>
-
-            </div >
-        );
-    }
-}
-
-const mapStateToProps = state => ({ state });
-
-const mapActionsToProps = {}
-
-export default connect(mapStateToProps, mapActionsToProps)(Map);
+// export default MapContainer;
