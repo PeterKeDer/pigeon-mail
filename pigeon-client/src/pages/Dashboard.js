@@ -264,9 +264,9 @@ function Dashboard(props) {
                                 </CardContent>
                                 <CardActions>
                                     <Button size="small">Manage</Button>
-                                    <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+                                    {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                                         Open simple dialog
-                                    </Button>
+                                    </Button> */}
                                 </CardActions>
                             </Card>
                         </Grid>
